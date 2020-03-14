@@ -199,6 +199,7 @@
                 newsItem = "<li><a href='{{url}}'target='{{target}}'>{{title}}</a></li>";
             news.forEach(function (item) {
                 item["url"] = item["url"] || "javascript:;";
+                item["target"] = item["target"] || "_self";
                 data += newsItem.replace(/{{(.+?)}}/g, function (match, key) {
                     return item[key];
                 });
