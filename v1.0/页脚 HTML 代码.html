@@ -50,12 +50,19 @@
     };
     var news = [
         {
+            "title": "我的博客园主题开源地址，戳这里",
+            "url": "https://github.com/pgjett/shmily-cnblogs-theme",
+            "target": "_blank"
+        },
+        {
+            "title": "并发与多线程知识总结",
+            "url": "https://www.cnblogs.com/pgjett/p/12340772.html"
+        },
+        {
             "title": "武汉加油，中国加油！",
-            "url": "javascript:;"
         },
         {
             "title": "努力永远不会太迟。",
-            "url": "javascript:;"
         }
     ];
 </script>
@@ -189,8 +196,9 @@
         function newsCarousel(news) {
             var data = "",
                 newsTpl = doc.querySelector("#scrollNewsTpl").innerHTML,
-                newsItem = "<li><a href='{{url}}'>{{title}}</a></li>";
+                newsItem = "<li><a href='{{url}}'target='{{target}}'>{{title}}</a></li>";
             news.forEach(function (item) {
+                item["url"] = item["url"] || "javascript:;";
                 data += newsItem.replace(/{{(.+?)}}/g, function (match, key) {
                     return item[key];
                 });
