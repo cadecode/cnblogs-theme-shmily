@@ -141,259 +141,266 @@
 <script type="text/javascript">
     var initRender = (function (doc) {
 
-        function render(data) {
-            var oMain = doc.querySelector("#mainContent");
-            oMain.innerHTML = data;
-        }
-
-        function tplReplace(hTpl, obj) {
-            return hTpl.replace(/{{(.*?)}}/g, function (match, key) {
-                return obj[key];
-            });
-        }
-
-        function objParse(obj, i) {
-            var oImg = obj["con"].querySelector(".desc_img"),
-                tCon = obj["con"].innerText;
-            obj["img"] = oImg ? "url(" + oImg.getAttribute("data-src") + ")" : "none";
-            obj["href"] = obj["title"].querySelector("a").href;
-            obj["con"] = tCon.replace(/摘要：|阅读全文/g, '');
-            obj["title"] = obj["title"].innerText;
-            obj["time"] = obj["desc"].innerText.match(/\d{4}-\d{2}-\d{2}/)[0];
-            obj["read"] = obj["desc"].innerText.match(/\(.+?\)/)[0].replace(/\(|\)/g, '');
-            obj["msg"] = obj["desc"].innerText.match(/\(.+?\)/g)[1].replace(/\(|\)/g, '');
-            return obj;
-        }
-
-        function pageNavigator() {
-            var next = doc.querySelector("#nav_next_page a"),
-                pager = doc.querySelector(".pager");
-            if (next) {
-                return doc.querySelector("#nav_next_page").outerHTML.replace("下一页", "<i class='shmilyFont shmily-resonserate-fill'></i>");
-            } else if (pager) {
-                return pager.outerHTML.replace("上一页", "<i class='shmilyFont shmily-arrow-lift'></i>").replace("下一页", "<i class='shmilyFont shmily-arrow-right'></i>");
+            function render(data) {
+                var oMain = doc.querySelector("#mainContent");
+                oMain.innerHTML = data;
             }
-            return '';
-        }
 
-        function imgCancel() {
-            [].forEach.call(doc.querySelectorAll(".postCon .desc_img"), function (item) {
-                if (item.src) {
-                    item.setAttribute("data-src", item.src);
-                    item.src = '';
-                }
-            });
-        }
-
-        function imgLoad() {
-            var divArr = doc.querySelectorAll(".postItem-img"),
-                nowDiv = initSource.setBackgroundLoad(divArr, 0);
-            window.addEventListener("scroll", function () {
-                nowDiv = initSource.setBackgroundLoad(divArr, nowDiv);
-            });
-        }
-
-        function newsCarousel(news) {
-            var data = "",
-                newsTpl = doc.querySelector("#scrollNewsTpl").innerHTML,
-                newsItem = "<li><a href='{{url}}'target='{{target}}'>{{title}}</a></li>";
-            news.forEach(function (item) {
-                item["url"] = item["url"] || "javascript:;";
-                item["target"] = item["target"] || "_self";
-                data += newsItem.replace(/{{(.+?)}}/g, function (match, key) {
-                    return item[key];
+            function tplReplace(hTpl, obj) {
+                return hTpl.replace(/{{(.*?)}}/g, function (match, key) {
+                    return obj[key];
                 });
-            });
-            data = newsTpl.replace(/{{news}}/, data);
-            setInterval(function () {
-                document.querySelector(".scrollNews-content ul").firstElementChild.style.marginTop = "-20px";
-                setTimeout(function () {
-                    document.querySelector(".scrollNews-content ul").appendChild(document.querySelector(".scrollNews-content ul").firstElementChild);
-                    document.querySelector(".scrollNews-content ul").lastElementChild.style.marginTop = "0px";
-                }, 500);
-            }, 3000);
-            jinrishici.load(function (result) {
-                initSource.setTimer(function () {
-                    return result && document.querySelector(".scrollNews-content ul");
-                }, function () {
+            }
+
+            function objParse(obj, i) {
+                var oImg = obj["con"].querySelector(".desc_img"),
+                    tCon = obj["con"].innerText;
+                obj["img"] = oImg ? "url(" + oImg.getAttribute("data-src") + ")" : "none";
+                obj["href"] = obj["title"].querySelector("a").href;
+                obj["con"] = tCon.replace(/摘要：|阅读全文/g, '');
+                obj["title"] = obj["title"].innerText;
+                obj["time"] = obj["desc"].innerText.match(/\d{4}-\d{2}-\d{2}/)[0];
+                obj["read"] = obj["desc"].innerText.match(/\(.+?\)/)[0].replace(/\(|\)/g, '');
+                obj["msg"] = obj["desc"].innerText.match(/\(.+?\)/g)[1].replace(/\(|\)/g, '');
+                return obj;
+            }
+
+            function pageNavigator() {
+                var next = doc.querySelector("#nav_next_page a"),
+                    pager = doc.querySelector(".pager");
+                if (next) {
+                    return doc.querySelector("#nav_next_page").outerHTML.replace("下一页", "<i class='shmilyFont shmily-resonserate-fill'></i>");
+                } else if (pager) {
+                    return pager.outerHTML.replace("上一页", "<i class='shmilyFont shmily-arrow-lift'></i>").replace("下一页", "<i class='shmilyFont shmily-arrow-right'></i>");
+                }
+                return '';
+            }
+
+            function imgCancel() {
+                [].forEach.call(doc.querySelectorAll(".postCon .desc_img"), function (item) {
+                    if (item.src) {
+                        item.setAttribute("data-src", item.src);
+                        item.src = '';
+                    }
+                });
+            }
+
+            function imgLoad() {
+                var divArr = doc.querySelectorAll(".postItem-img"),
+                    nowDiv = initSource.setBackgroundLoad(divArr, 0);
+                window.addEventListener("scroll", function () {
+                    nowDiv = initSource.setBackgroundLoad(divArr, nowDiv);
+                });
+            }
+
+            function newsCarousel(news) {
+                var data = "",
+                    newsTpl = doc.querySelector("#scrollNewsTpl").innerHTML,
+                    newsItem = "<li><a href='{{url}}'target='{{target}}'>{{title}}</a></li>";
+                news.forEach(function (item) {
+                    item["url"] = item["url"] || "javascript:;";
+                    item["target"] = item["target"] || "_self";
+                    data += newsItem.replace(/{{(.+?)}}/g, function (match, key) {
+                        return item[key];
+                    });
+                });
+                data = newsTpl.replace(/{{news}}/, data);
+                setInterval(function () {
+                    doc.querySelector(".scrollNews-content ul").firstElementChild.style.marginTop = "-20px";
+                    setTimeout(function () {
+                        doc.querySelector(".scrollNews-content ul").appendChild(doc.querySelector(".scrollNews-content ul").firstElementChild);
+                        doc.querySelector(".scrollNews-content ul").lastElementChild.style.marginTop = "0px";
+                    }, 500);
+                }, 3000);
+                jinrishici.load(function (result) {
                     var content = result.data.content,
                         author = result.data.origin.author,
                         dynasty = result.data.origin.dynasty,
                         li = doc.createElement("li");
+                    li.id = "poem-li";
                     li.innerText = content + " —— " + author + "【" + dynasty + "】";
-                    document.querySelector(".scrollNews-content ul").appendChild(li);
-                }, 3000);
-            });
-            return data;
-        }
-
-        function defaultPage(news) {
-            imgCancel();
-            var oTitles = doc.querySelectorAll(".postTitle"),
-                oCons = doc.querySelectorAll(".postCon"),
-                oDescs = doc.querySelectorAll(".postDesc");
-            var itemTpl = doc.querySelector("#postItemTpl").innerHTML,
-                infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
-                data = "";
-            if (oTitles.length == 0) {
-                data += tplReplace(infoTpl, {"info": "Nothing is here"});
+                    doc.querySelector(".scrollNews-content ul").appendChild(li);
+                    setInterval(function () {
+                        jinrishici.load(function (result) {
+                            var content = result.data.content,
+                                author = result.data.origin.author,
+                                dynasty = result.data.origin.dynasty;
+                            doc.querySelector("#poem-li").innerText = content + " —— " + author + "【" + dynasty + "】";
+                        });
+                    }, 3000 * doc.querySelectorAll(".scrollNews-content li").length);
+                });
+                return data;
             }
-            [].forEach.call(oTitles, function (item, i) {
-                data += tplReplace(itemTpl, objParse({
-                    "con": oCons[i],
-                    "title": oTitles[i],
-                    "desc": oDescs[i]
-                }));
-            });
-            render(newsCarousel(news) + data + pageNavigator());
-            imgLoad();
-        }
 
-        function categoryPage() {
-            imgCancel();
-            var oTitles = doc.querySelectorAll(".entrylistPosttitle"),
-                oCons = doc.querySelectorAll(".entrylistPostSummary"),
-                oDescs = doc.querySelectorAll(".entrylistItemPostDesc");
-            var itemTpl = doc.querySelector("#postItemTpl").innerHTML,
-                infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
-                data = "";
-            if (oTitles.length == 0) {
-                data += tplReplace(infoTpl, {"info": "Nothing is here"});
-            }
-            [].forEach.call(oTitles, function (item, i) {
+            function defaultPage(news) {
+                imgCancel();
+                var oTitles = doc.querySelectorAll(".postTitle"),
+                    oCons = doc.querySelectorAll(".postCon"),
+                    oDescs = doc.querySelectorAll(".postDesc");
+                var itemTpl = doc.querySelector("#postItemTpl").innerHTML,
+                    infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
+                    data = "";
+                if (oTitles.length == 0) {
+                    data += tplReplace(infoTpl, {"info": "Nothing is here"});
+                }
+                [].forEach.call(oTitles, function (item, i) {
                     data += tplReplace(itemTpl, objParse({
                         "con": oCons[i],
                         "title": oTitles[i],
                         "desc": oDescs[i]
                     }));
-                }
-            );
-            render(data + pageNavigator());
-            imgLoad();
-        }
+                });
+                render(newsCarousel(news) + data + pageNavigator());
+                imgLoad();
+            }
 
-        function myBlogPage() {
-            var oTitles = doc.querySelectorAll(".postTitl2"),
-                oDescs = doc.querySelectorAll(".postDesc2");
-            var itemTpl = doc.querySelector("#archiveItemTpl").innerHTML,
-                infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
-                data = "",
-                temp = {};
-            [].forEach.call(oTitles, function (item, i) {
-                    if (!temp[oDescs[i].innerText.match(/\d{4}-\d{2}/)[0]]) {
-                        data += tplReplace(infoTpl, {"info": oDescs[i].innerText.match(/\d{4}-\d{2}/)[0]});
-                        temp[oDescs[i].innerText.match(/\d{4}-\d{2}/)[0]] = 1;
+            function categoryPage() {
+                imgCancel();
+                var oTitles = doc.querySelectorAll(".entrylistPosttitle"),
+                    oCons = doc.querySelectorAll(".entrylistPostSummary"),
+                    oDescs = doc.querySelectorAll(".entrylistItemPostDesc");
+                var itemTpl = doc.querySelector("#postItemTpl").innerHTML,
+                    infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
+                    data = "";
+                if (oTitles.length == 0) {
+                    data += tplReplace(infoTpl, {"info": "Nothing is here"});
+                }
+                [].forEach.call(oTitles, function (item, i) {
+                        data += tplReplace(itemTpl, objParse({
+                            "con": oCons[i],
+                            "title": oTitles[i],
+                            "desc": oDescs[i]
+                        }));
                     }
-                    data += tplReplace(itemTpl, {
-                        "title": item.innerText,
-                        "href": item.querySelector("a").href,
-                        "time": oDescs[i].innerText.match(/\d{4}-\d{2}-\d{2}/)[0]
-                    });
-                }
-            );
-            render(data + pageNavigator());
-        }
-
-        function blogDetailPage() {
-            window.addEventListener("load", function () {
-                initSource.setTimer(function () {
-                    var read = doc.querySelector(".postDesc").innerText.match(/\(.+?\)/)[0].replace(/\(|\)/g, ''),
-                        msg = doc.querySelector(".postDesc").innerText.match(/\(.+?\)/g)[1].replace(/\(|\)/g, '');
-                    return !isNaN(read + msg);
-                }, function () {
-                    var desc = doc.querySelector(".postDesc"),
-                        category = doc.querySelector("#BlogPostCategory");
-                    var hTpl = doc.querySelector("#blogInfoTpl").innerHTML,
-                        hDesc = desc.innerText;
-                    doc.querySelector("#cnblogs_post_body h1").outerHTML += tplReplace(hTpl, {
-                        "time": hDesc.match(/\d{4}-\d{2}-\d{2}/)[0],
-                        "author": desc.querySelector("a").outerHTML,
-                        "read": hDesc.match(/\(.+?\)/)[0].replace(/\(|\)/g, ''),
-                        "msg": hDesc.match(/\(.+?\)/g)[1].replace(/\(|\)/g, ''),
-                        "category": category ? category.innerHTML : "分类：no support for this browser"
-                    });
-                    initSource.setCatalog();
-                    initSource.setCopyButton();
-                    initSource.setCommentArea();
-                    initSource.setImgZoom();
-                }, 5000);
-            });
-        }
-
-        function monthArchivePage() {
-            var oTitles = doc.querySelectorAll(".entrylistPosttitle"),
-                oDescs = doc.querySelectorAll(".entrylistItemPostDesc");
-            var itemTpl = doc.querySelector("#archiveItemTpl").innerHTML,
-                infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
-                data = "";
-            if (oTitles.length > 0) {
-                data += tplReplace(infoTpl, {"info": oDescs[0].innerText.match(/\d{4}-\d{2}/)[0]});
-            } else {
-                data += tplReplace(infoTpl, {"info": "Nothing is here"});
+                );
+                render(data + pageNavigator());
+                imgLoad();
             }
-            [].forEach.call(oTitles, function (item, i) {
-                    data += tplReplace(itemTpl, {
-                        "title": item.innerText,
-                        "href": item.querySelector("a").href,
-                        "time": oDescs[i].innerText.match(/\d{4}-\d{2}-\d{2}/)[0]
-                    });
-                }
-            );
-            render(data + pageNavigator());
-        }
 
-        function dayArchivePage() {
-            var oTitles = doc.querySelectorAll(".postTitle"),
-                oDescs = doc.querySelectorAll(".postDesc");
-            var itemTpl = doc.querySelector("#archiveItemTpl").innerHTML,
-                infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
-                data = "";
-            if (oTitles.length > 0) {
-                data += tplReplace(infoTpl, {"info": oDescs[0].innerText.match(/\d{4}-\d{2}-\d{2}/)[0]});
-            } else {
-                data += tplReplace(infoTpl, {"info": "Nothing is here"});
+            function myBlogPage() {
+                var oTitles = doc.querySelectorAll(".postTitl2"),
+                    oDescs = doc.querySelectorAll(".postDesc2");
+                var itemTpl = doc.querySelector("#archiveItemTpl").innerHTML,
+                    infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
+                    data = "",
+                    temp = {};
+                [].forEach.call(oTitles, function (item, i) {
+                        if (!temp[oDescs[i].innerText.match(/\d{4}-\d{2}/)[0]]) {
+                            data += tplReplace(infoTpl, {"info": oDescs[i].innerText.match(/\d{4}-\d{2}/)[0]});
+                            temp[oDescs[i].innerText.match(/\d{4}-\d{2}/)[0]] = 1;
+                        }
+                        data += tplReplace(itemTpl, {
+                            "title": item.innerText,
+                            "href": item.querySelector("a").href,
+                            "time": oDescs[i].innerText.match(/\d{4}-\d{2}-\d{2}/)[0]
+                        });
+                    }
+                );
+                render(data + pageNavigator());
             }
-            [].forEach.call(oTitles, function (item, i) {
-                    data += tplReplace(itemTpl, {
-                        "title": item.innerText,
-                        "href": item.querySelector("a").href,
-                        "time": oDescs[i].innerText.match(/\d{4}-\d{2}-\d{2}/)[0]
-                    });
+
+            function blogDetailPage() {
+                window.addEventListener("load", function () {
+                    initSource.setTimer(function () {
+                        var read = doc.querySelector(".postDesc").innerText.match(/\(.+?\)/)[0].replace(/\(|\)/g, ''),
+                            msg = doc.querySelector(".postDesc").innerText.match(/\(.+?\)/g)[1].replace(/\(|\)/g, '');
+                        return !isNaN(read + msg);
+                    }, function () {
+                        var desc = doc.querySelector(".postDesc"),
+                            category = doc.querySelector("#BlogPostCategory");
+                        var hTpl = doc.querySelector("#blogInfoTpl").innerHTML,
+                            hDesc = desc.innerText;
+                        doc.querySelector("#cnblogs_post_body h1").outerHTML += tplReplace(hTpl, {
+                            "time": hDesc.match(/\d{4}-\d{2}-\d{2}/)[0],
+                            "author": desc.querySelector("a").outerHTML,
+                            "read": hDesc.match(/\(.+?\)/)[0].replace(/\(|\)/g, ''),
+                            "msg": hDesc.match(/\(.+?\)/g)[1].replace(/\(|\)/g, ''),
+                            "category": category ? category.innerHTML : "分类：no support for this browser"
+                        });
+                        initSource.setCatalog();
+                        initSource.setCopyButton();
+                        initSource.setCommentArea();
+                        initSource.setImgZoom();
+                    }, 5000);
+                });
+            }
+
+            function monthArchivePage() {
+                var oTitles = doc.querySelectorAll(".entrylistPosttitle"),
+                    oDescs = doc.querySelectorAll(".entrylistItemPostDesc");
+                var itemTpl = doc.querySelector("#archiveItemTpl").innerHTML,
+                    infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
+                    data = "";
+                if (oTitles.length > 0) {
+                    data += tplReplace(infoTpl, {"info": oDescs[0].innerText.match(/\d{4}-\d{2}/)[0]});
+                } else {
+                    data += tplReplace(infoTpl, {"info": "Nothing is here"});
                 }
-            );
-            render(data + pageNavigator());
+                [].forEach.call(oTitles, function (item, i) {
+                        data += tplReplace(itemTpl, {
+                            "title": item.innerText,
+                            "href": item.querySelector("a").href,
+                            "time": oDescs[i].innerText.match(/\d{4}-\d{2}-\d{2}/)[0]
+                        });
+                    }
+                );
+                render(data + pageNavigator());
+            }
+
+            function dayArchivePage() {
+                var oTitles = doc.querySelectorAll(".postTitle"),
+                    oDescs = doc.querySelectorAll(".postDesc");
+                var itemTpl = doc.querySelector("#archiveItemTpl").innerHTML,
+                    infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
+                    data = "";
+                if (oTitles.length > 0) {
+                    data += tplReplace(infoTpl, {"info": oDescs[0].innerText.match(/\d{4}-\d{2}-\d{2}/)[0]});
+                } else {
+                    data += tplReplace(infoTpl, {"info": "Nothing is here"});
+                }
+                [].forEach.call(oTitles, function (item, i) {
+                        data += tplReplace(itemTpl, {
+                            "title": item.innerText,
+                            "href": item.querySelector("a").href,
+                            "time": oDescs[i].innerText.match(/\d{4}-\d{2}-\d{2}/)[0]
+                        });
+                    }
+                );
+                render(data + pageNavigator());
+            }
+
+            function totalGalleryPage() {
+
+            }
+
+            function imgGalleryPage() {
+
+            }
+
+            function otherPostsPage() {
+
+            }
+
+            function undefinedPage() {
+                var tpl = doc.querySelector("#pageInfoTpl").innerHTML;
+                render(tplReplace(tpl, {"info": "Sorry, a bug has occurred, check you url please"}));
+            }
+
+            return {
+                default: defaultPage,
+                blogDetail: blogDetailPage,
+                myBlog: myBlogPage,
+                category: categoryPage,
+                monthArchive: monthArchivePage,
+                dayArchive: dayArchivePage,
+                totalGallery: totalGalleryPage,
+                imgGallery: imgGalleryPage,
+                otherPosts: otherPostsPage,
+                undefined: undefinedPage
+            }
         }
 
-        function totalGalleryPage() {
-
-        }
-
-        function imgGalleryPage() {
-
-        }
-
-        function otherPostsPage() {
-
-        }
-
-        function undefinedPage() {
-            var tpl = doc.querySelector("#pageInfoTpl").innerHTML;
-            render(tplReplace(tpl, {"info": "Sorry, a bug has occurred, check you url please"}));
-        }
-
-        return {
-            default: defaultPage,
-            blogDetail: blogDetailPage,
-            myBlog: myBlogPage,
-            category: categoryPage,
-            monthArchive: monthArchivePage,
-            dayArchive: dayArchivePage,
-            totalGallery: totalGalleryPage,
-            imgGallery: imgGalleryPage,
-            otherPosts: otherPostsPage,
-            undefined: undefinedPage
-        }
-    })(document);
+    )(document);
 
     var initSource = (function (doc) {
 
