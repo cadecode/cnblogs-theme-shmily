@@ -724,6 +724,7 @@ body {
     height: 20px;
     margin: 0;
     padding: 0;
+    font-size: 14px;
     line-height: 20px;
     list-style: none;
 }
@@ -738,7 +739,6 @@ body {
 }
 
 .scrollNews-content a {
-    font-size: 14px;
     color: #313131;
     text-decoration: none;
 }
