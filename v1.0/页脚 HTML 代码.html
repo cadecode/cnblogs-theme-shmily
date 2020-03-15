@@ -406,11 +406,12 @@
             var url = window.location.href.substr(24 + currentBlogApp.length),
                 urlReg = {
                     "default": /^\/?(default\.html(\?page=\d+)?)?$/,
-                    "blogDetail": /^\/(p|article)\/\d+\.html?(#.*)?$/,
+                    "blogDetail": /^\/(protected\/)?(p|article)\/\d+\.html?(#.*)?$/,
                     "myBlog": /^\/p\/?(\?page=\d+)?$/,
                     "category": /^\/category\//,
                     "monthArchive": /^\/archive\/\d{4}\/\d{2}\.html/,
                     "dayArchive": /^\/archive\/\d{4}\/\d{2}\/\d{2}\.html/,
+                    "tag": /^\/tag/,
                     "totalGallery": /^\/gallery\/\d+\.html/,
                     "imgGallery": /^\/gallery\/image/,
                     "otherPosts": /^\/OtherPosts\.html/
