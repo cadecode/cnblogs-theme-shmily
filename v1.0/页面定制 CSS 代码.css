@@ -195,12 +195,17 @@ body {
 }
 
 .post .postTitle {
-    display: none;
+    font-size: 1.4em;
+    font-weight: 500;
+}
+
+.post .postTitle a {
+    color: #313131;
+    text-decoration: none;
 }
 
 #cnblogs_post_body h1 {
-    font-size: 1.4em;
-    font-weight: 500;
+    display: none;
 }
 
 #cnblogs_post_body h2 {
