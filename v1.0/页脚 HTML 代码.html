@@ -105,6 +105,9 @@
         <span>
             <i class="shmilyFont shmily-comments"></i>{{msg}}
         </span>
+        <span>
+            <i class="shmilyFont shmily-editor"></i>{{editor}}
+        </span>
         <div class="blogInfo-category">
             {{category}}
         </div>
@@ -310,11 +313,13 @@
                         category = doc.querySelector("#BlogPostCategory");
                     var hTpl = doc.querySelector("#blogInfoTpl").innerHTML,
                         hDesc = desc.innerText;
+                    console.log(desc);
                     doc.querySelector(".post .postTitle").outerHTML += tplReplace(hTpl, {
                         "time": hDesc.match(/\d{4}-\d{2}-\d{2}/)[0],
                         "author": desc.querySelector("a").outerHTML,
                         "read": hDesc.match(/\(.+?\)/)[0].replace(/\(|\)/g, ''),
                         "msg": hDesc.match(/\(.+?\)/g)[1].replace(/\(|\)/g, ''),
+                        "editor": desc.querySelector("a:nth-last-of-type(2)").outerHTML,
                         "category": category ? category.innerHTML : "分类：no support for this browser"
                     });
                     initSource.setCatalog();
