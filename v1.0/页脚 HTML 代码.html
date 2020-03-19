@@ -1,0 +1,2026 @@
+<<<<<<< HEAD
+<!--***start: page end html***-->
+<div class="btmNav">
+	<div class="btmNav-content">
+		<div class="btmNav-left">
+			<a href="javascript:;">Links</a>
+			<a href="javascript:;">Github</a>
+			<a href="javascript:;">MailTo</a>
+			<a href="javascript:;" onclick="initAction.switchBtmNav()">
+				<i class="shmilyFont shmily-arrow-up"></i>
+			</a>
+		</div>
+		<div class="btmNav-right">
+			<a href="javascript:;" onclick="initAction.switchCatalog()">
+				<i class="shmilyFont shmily-zhankai"></i>
+			</a>
+			<a href="javascript:;">
+				<i class="shmilyFont shmily-leftarrow"></i>
+			</a>
+			<a href="javascript:;">
+				<i class="shmilyFont shmily-Rightarrow"></i>
+			</a>
+			<a href="javascript:;" onclick="initAction.scrollTop()">
+				<i class="shmilyFont shmily-rising"></i>
+			</a>
+			<a href="javascript:;" onclick="initAction.scrollBottom()">
+				<i class="shmilyFont shmily-falling"></i>
+			</a>
+			<a href="javascript:;" onclick="initAction.switchSideBar()">
+				<i class="shmilyFont shmily-shouqi"></i>
+			</a>
+		</div>
+	</div>
+</div>
+<!--***end：page end html***-->
+
+<!--***start: javascript***-->
+<!--plugin-->
+<script src="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+<script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+<!--parameter-->
+<script type="text/javascript">
+	var profile = {
+		"icon": "https://blog-static.cnblogs.com/files/pgjett/favicon.ico",
+		"logo": "https://blog-static.cnblogs.com/files/pgjett/logo.ico",
+		"github": "https://github.com/pgjett",
+		"links": "https://www.cnblogs.com/pgjett/p/12294879.html",
+		"about": "https://www.cnblogs.com/pgjett/p/12294875.html",
+		"mail": "http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=eAgfEh0MDDgJCVYbFxU",
+		"followId": '54ceedb5-de8f-4136-e346-08d7804a3aa0'
+	};
+	var news = [{
+			"title": "我的博客园主题开源地址，戳这里",
+			"url": "https://github.com/pgjett/shmily-cnblogs-theme",
+			"target": "_blank"
+		},
+		{
+			"title": "并发与多线程知识总结",
+			"url": "https://www.cnblogs.com/pgjett/p/12340772.html"
+		},
+		{
+			"title": "武汉加油，中国加油！",
+		},
+		{
+			"title": "努力永远不会太迟。",
+		}
+	];
+</script>
+<!--template-->
+<script id="postItemTpl" type="text/html">
+	<div class="postItem-box">
+        <div class="postItem-content">
+            <div class="postItem-img" data-src="{{img}}"></div>
+            <a href="{{href}}">
+                <div class="postItem-con">{{con}}</div>
+            </a>
+            <div class="postItem-title">
+                <a href="{{href}}">{{title}}</a>
+            </div>
+            <div class="postItem-desc">
+                <span>
+                    <i class="shmilyFont shmily-calendar"></i>{{time}}
+                </span>
+                <span>
+                    <i class="shmilyFont shmily-browse"></i>{{read}}
+                </span>
+                <span>
+                    <i class="shmilyFont shmily-comments"></i>{{msg}}
+                </span>
+            </div>
+        </div>
+    </div>
+</script>
+<script id="blogInfoTpl" type="text/html">
+	<div class="blogInfo-box">
+        <span>
+            <i class="shmilyFont shmily-calendar"></i>{{time}}
+        </span>
+        <span>
+            <i class="shmilyFont shmily-account"></i>{{author}}
+        </span>
+        <span>
+            <i class="shmilyFont shmily-browse"></i>{{read}}
+        </span>
+        <span>
+            <i class="shmilyFont shmily-comments"></i>{{msg}}
+        </span>
+        <span>
+            <i class="shmilyFont shmily-editor"></i>{{editor}}
+        </span>
+        <div class="blogInfo-category">
+            {{category}}
+        </div>
+    </div>
+</script>
+<script id="archiveItemTpl" type="text/html">
+	<div class="archiveItem-box">
+        <div class="archiveItem-content">
+            <div class="archiveItem-title">
+                <a href="{{href}}">{{title}}</a>
+            </div>
+            <div class="archiveItem-time">
+                {{time}}
+            </div>
+        </div>
+    </div>
+</script>
+<script id="pageInfoTpl" type="text/html">
+	<div class="pageInfo-box">
+        {{info}}
+    </div>
+</script>
+<script id="scrollNewsTpl" type="text/html">
+	<div class="scrollNews-box">
+        <div class="scrollNews-content">
+            <i class="shmilyFont shmily-notice"></i>
+            <ul>
+                {{news}}
+            </ul>
+        </div>
+    </div>
+</script>
+<!--modules-->
+<script type="text/javascript">
+	var initRender = (function(doc) {
+
+		function render(data) {
+			var oMain = doc.querySelector("#mainContent");
+			oMain.innerHTML = data;
+		}
+
+		function tplReplace(hTpl, obj) {
+			return hTpl.replace(/{{(.*?)}}/g, function(match, key) {
+				return obj[key];
+			});
+		}
+
+		function objParse(obj, i) {
+			var oImg = obj["con"].querySelector(".desc_img"),
+				tCon = obj["con"].innerText;
+			obj["img"] = oImg ? "url(" + oImg.getAttribute("data-src") + ")" : "none";
+			obj["href"] = obj["title"].querySelector("a").href;
+			obj["con"] = tCon.replace(/摘要：|阅读全文/g, '');
+			obj["title"] = obj["title"].innerText;
+			obj["time"] = obj["desc"].innerText.match(/\d{4}-\d{2}-\d{2}/)[0];
+			obj["read"] = obj["desc"].innerText.match(/\(.+?\)/)[0].replace(/\(|\)/g, '');
+			obj["msg"] = obj["desc"].innerText.match(/\(.+?\)/g)[1].replace(/\(|\)/g, '');
+			return obj;
+		}
+
+		function pageNavigator() {
+			var next = doc.querySelector("#nav_next_page a"),
+				pager = doc.querySelector(".pager");
+			if (next) {
+				return doc.querySelector("#nav_next_page").outerHTML.replace("下一页",
+					"<i class='shmilyFont shmily-resonserate-fill'></i>");
+			} else if (pager) {
+				return pager.outerHTML.replace("上一页", "<i class='shmilyFont shmily-arrow-lift'></i>").replace("下一页",
+					"<i class='shmilyFont shmily-arrow-right'></i>");
+			}
+			return '';
+		}
+
+		function imgCancel() {
+			[].forEach.call(doc.querySelectorAll(".postCon .desc_img"), function(item) {
+				if (item.src) {
+					item.setAttribute("data-src", item.src);
+					item.src = '';
+				}
+			});
+		}
+
+		function imgLoad() {
+			var divArr = doc.querySelectorAll(".postItem-img"),
+				nowDiv = initSource.setBackgroundLoad(divArr, 0);
+			window.addEventListener("scroll", function() {
+				nowDiv = initSource.setBackgroundLoad(divArr, nowDiv);
+			});
+		}
+
+		function newsCarousel(news) {
+			var data = "",
+				newsTpl = doc.querySelector("#scrollNewsTpl").innerHTML,
+				newsItem = "<li><a href='{{url}}'target='{{target}}'>{{title}}</a></li>";
+			news.forEach(function(item) {
+				item["url"] = item["url"] || "javascript:;";
+				item["target"] = item["target"] || "_self";
+				data += newsItem.replace(/{{(.+?)}}/g, function(match, key) {
+					return item[key];
+				});
+			});
+			data = newsTpl.replace(/{{news}}/, data);
+			setInterval(function() {
+				doc.querySelector(".scrollNews-content ul").firstElementChild.style.marginTop = "-20px";
+				setTimeout(function() {
+					doc.querySelector(".scrollNews-content ul").appendChild(doc.querySelector(".scrollNews-content ul").firstElementChild);
+					doc.querySelector(".scrollNews-content ul").lastElementChild.style.marginTop = "0px";
+				}, 500);
+			}, 3000);
+			jinrishici.load(function(result) {
+				var content = result.data.content,
+					author = result.data.origin.author,
+					dynasty = result.data.origin.dynasty,
+					li = doc.createElement("li");
+				li.id = "poem-li";
+				li.innerText = content + " —— " + author + "【" + dynasty + "】";
+				doc.querySelector(".scrollNews-content ul").appendChild(li);
+				setInterval(function() {
+					jinrishici.load(function(result) {
+						var content = result.data.content,
+							author = result.data.origin.author,
+							dynasty = result.data.origin.dynasty;
+						doc.querySelector("#poem-li").innerText = content + " —— " + author + "【" + dynasty + "】";
+					});
+				}, 3000 * doc.querySelectorAll(".scrollNews-content li").length);
+			});
+			return data;
+		}
+
+		function defaultPage(news) {
+			imgCancel();
+			var oTitles = doc.querySelectorAll(".postTitle"),
+				oCons = doc.querySelectorAll(".postCon"),
+				oDescs = doc.querySelectorAll(".postDesc");
+			var itemTpl = doc.querySelector("#postItemTpl").innerHTML,
+				infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
+				data = "";
+			if (oTitles.length == 0) {
+				data += tplReplace(infoTpl, {
+					"info": "Nothing is here"
+				});
+			}
+			[].forEach.call(oTitles, function(item, i) {
+				data += tplReplace(itemTpl, objParse({
+					"con": oCons[i],
+					"title": oTitles[i],
+					"desc": oDescs[i]
+				}));
+			});
+			render(newsCarousel(news) + data + pageNavigator());
+			imgLoad();
+		}
+
+		function categoryPage() {
+			imgCancel();
+			var oTitles = doc.querySelectorAll(".entrylistPosttitle"),
+				oCons = doc.querySelectorAll(".entrylistPostSummary"),
+				oDescs = doc.querySelectorAll(".entrylistItemPostDesc");
+			var itemTpl = doc.querySelector("#postItemTpl").innerHTML,
+				infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
+				data = "";
+			if (oTitles.length == 0) {
+				data += tplReplace(infoTpl, {
+					"info": "Nothing is here"
+				});
+			}
+			[].forEach.call(oTitles, function(item, i) {
+				data += tplReplace(itemTpl, objParse({
+					"con": oCons[i],
+					"title": oTitles[i],
+					"desc": oDescs[i]
+				}));
+			});
+			render(data + pageNavigator());
+			imgLoad();
+		}
+
+		function myBlogPage() {
+			var oTitles = doc.querySelectorAll(".postTitl2"),
+				oDescs = doc.querySelectorAll(".postDesc2");
+			var itemTpl = doc.querySelector("#archiveItemTpl").innerHTML,
+				infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
+				data = "",
+				temp = {};
+			[].forEach.call(oTitles, function(item, i) {
+				if (!temp[oDescs[i].innerText.match(/\d{4}-\d{2}/)[0]]) {
+					data += tplReplace(infoTpl, {
+						"info": oDescs[i].innerText.match(/\d{4}-\d{2}/)[0]
+					});
+					temp[oDescs[i].innerText.match(/\d{4}-\d{2}/)[0]] = 1;
+				}
+				data += tplReplace(itemTpl, {
+					"title": item.innerText,
+					"href": item.querySelector("a").href,
+					"time": oDescs[i].innerText.match(/\d{4}-\d{2}-\d{2}/)[0]
+				});
+			});
+			render(data + pageNavigator());
+		}
+
+		function blogDetailPage() {
+			window.addEventListener("load", function() {
+				initSource.setTimer(function() {
+					var read = doc.querySelector(".postDesc").innerText.match(/\(.+?\)/)[0].replace(/\(|\)/g, ''),
+						msg = doc.querySelector(".postDesc").innerText.match(/\(.+?\)/g)[1].replace(/\(|\)/g, '');
+					return !isNaN(read + msg);
+				}, function() {
+					var desc = doc.querySelector(".postDesc"),
+						category = doc.querySelector("#BlogPostCategory");
+					var hTpl = doc.querySelector("#blogInfoTpl").innerHTML,
+						hDesc = desc.innerText;
+					doc.querySelector(".post .postTitle").outerHTML += tplReplace(hTpl, {
+						"time": hDesc.match(/\d{4}-\d{2}-\d{2}/)[0],
+						"author": desc.querySelector("a").outerHTML,
+						"read": hDesc.match(/\(.+?\)/)[0].replace(/\(|\)/g, ''),
+						"msg": hDesc.match(/\(.+?\)/g)[1].replace(/\(|\)/g, ''),
+						"editor": desc.querySelector("a:nth-last-of-type(2)").outerHTML,
+						"category": category ? category.innerHTML : "分类：no support for this browser"
+					});
+					initSource.setCatalog();
+					initSource.setCopyButton();
+					initSource.setCommentArea();
+					initSource.setImgZoom();
+				}, 5000);
+			});
+		}
+
+		function monthArchivePage() {
+			var oTitles = doc.querySelectorAll(".entrylistPosttitle"),
+				oDescs = doc.querySelectorAll(".entrylistItemPostDesc");
+			var itemTpl = doc.querySelector("#archiveItemTpl").innerHTML,
+				infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
+				data = "";
+			if (oTitles.length > 0) {
+				data += tplReplace(infoTpl, {
+					"info": oDescs[0].innerText.match(/\d{4}-\d{2}/)[0]
+				});
+			} else {
+				data += tplReplace(infoTpl, {
+					"info": "Nothing is here"
+				});
+			}
+			[].forEach.call(oTitles, function(item, i) {
+				data += tplReplace(itemTpl, {
+					"title": item.innerText,
+					"href": item.querySelector("a").href,
+					"time": oDescs[i].innerText.match(/\d{4}-\d{2}-\d{2}/)[0]
+				});
+			});
+			render(data + pageNavigator());
+		}
+
+		function dayArchivePage() {
+			var oTitles = doc.querySelectorAll(".postTitle"),
+				oDescs = doc.querySelectorAll(".postDesc");
+			var itemTpl = doc.querySelector("#archiveItemTpl").innerHTML,
+				infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
+				data = "";
+			if (oTitles.length > 0) {
+				data += tplReplace(infoTpl, {
+					"info": oDescs[0].innerText.match(/\d{4}-\d{2}-\d{2}/)[0]
+				});
+			} else {
+				data += tplReplace(infoTpl, {
+					"info": "Nothing is here"
+				});
+			}
+			[].forEach.call(oTitles, function(item, i) {
+				data += tplReplace(itemTpl, {
+					"title": item.innerText,
+					"href": item.querySelector("a").href,
+					"time": oDescs[i].innerText.match(/\d{4}-\d{2}-\d{2}/)[0]
+				});
+			});
+			render(data + pageNavigator());
+		}
+
+		function tagPage() {
+
+		}
+
+		function totalGalleryPage() {
+
+		}
+
+		function imgGalleryPage() {
+
+		}
+
+		function otherPostsPage() {
+
+		}
+
+		function undefinedPage() {
+			var tpl = doc.querySelector("#pageInfoTpl").innerHTML;
+			render(tplReplace(tpl, {
+				"info": "Sorry, a bug has occurred, check you url please"
+			}));
+		}
+
+		return {
+			default: defaultPage,
+			blogDetail: blogDetailPage,
+			myBlog: myBlogPage,
+			category: categoryPage,
+			monthArchive: monthArchivePage,
+			dayArchive: dayArchivePage,
+			tag: tagPage,
+			totalGallery: totalGalleryPage,
+			imgGallery: imgGalleryPage,
+			otherPosts: otherPostsPage,
+			undefined: undefinedPage
+		}
+	})(document);
+
+	var initSource = (function(doc) {
+
+		function getPageLocation() {
+			var url = window.location.href.substr(24 + currentBlogApp.length),
+				urlReg = {
+					"default": /^\/?(default\.html(\?page=\d+)?)?$/,
+					"blogDetail": /^\/(protected\/)?(p|article)\/\d+\.html?(#.*)?$/,
+					"myBlog": /^\/p\/?(\?page=\d+)?$/,
+					"category": /^\/category\//,
+					"monthArchive": /^\/archive\/\d{4}\/\d{2}\.html/,
+					"dayArchive": /^\/archive\/\d{4}\/\d{2}\/\d{2}\.html/,
+					"tag": /^\/tag/,
+					"totalGallery": /^\/gallery\/\d+\.html/,
+					"imgGallery": /^\/gallery\/image/,
+					"otherPosts": /^\/OtherPosts\.html/
+				};
+			for (var key in urlReg) {
+				if (urlReg[key].test(url)) {
+					return key;
+				}
+			}
+			return "undefined";
+		}
+
+		function getPageSize() {
+			if (window.innerWidth || document.documentElement.clientWidth > 767) {
+				return "max";
+			} else return "min";
+		}
+
+		function getPageHeight() {
+			return doc.documentElement.scrollHeight || doc.body.scrollHeight;
+		}
+
+		function getElementHeight(element) {
+			if (element.offsetParent.tagName == "BODY") {
+				return element.offsetTop;
+			} else return element.offsetTop + getElementHeight(element.offsetParent);
+		}
+
+		function getIeFlag() {
+			return /\bTrident\b/.test(navigator.userAgent);
+		}
+
+		function setIcon(prof) {
+			var oIcon = document.createElement("link");
+			oIcon.rel = "shortcut icon";
+			oIcon.href = prof["icon"];
+			doc.querySelector("head").appendChild(oIcon);
+			doc.querySelector(".topNav-logo img").setAttribute("src", prof["logo"]);
+		}
+
+		function setNavHref(prof, location) {
+			var oTopAs = doc.querySelectorAll(".topNav a"),
+				oBtmAs = doc.querySelectorAll(".btmNav a");
+			oTopAs[0].href = "https://www.cnblogs.com/" + currentBlogApp;
+			oTopAs[2].href = "https://www.cnblogs.com/" + currentBlogApp;
+			oTopAs[3].href = "https://www.cnblogs.com/" + currentBlogApp + "/p";
+			oTopAs[4].href = "https://msg.cnblogs.com/send/" + currentBlogApp;
+			oTopAs[6].href = prof["about"];
+			if (location == "blogDetail") {
+				oBtmAs[0].innerHTML = "点赞";
+				oBtmAs[1].innerHTML = "收藏";
+				oBtmAs[2].innerHTML = "关注";
+				oBtmAs[0].onclick = function() {
+					initAction.nativeVote(cb_entryId, "Digg")
+				};
+				oBtmAs[1].onclick = function() {
+					AddToWz(cb_entryId);
+				};
+				oBtmAs[2].onclick = function() {
+					initAction.nativeFollow(prof["followId"]);
+				};
+				setTimer(function() {
+					return doc.querySelectorAll("#post_next_prev .p_n_p_prefix").length > 0;
+				}, function() {
+					var pnp = doc.querySelectorAll("#post_next_prev .p_n_p_prefix");
+					if (pnp.length > 1) {
+						oBtmAs[5].style.display = "inline";
+						oBtmAs[6].style.display = "inline";
+						oBtmAs[5].href = pnp[0].href;
+						oBtmAs[6].href = pnp[1].href;
+					} else if (pnp.length == 1) {
+						if (pnp[0].innerHTML == "« ") {
+							oBtmAs[5].style.display = "inline";
+							oBtmAs[5].href = pnp[0].href;
+						} else {
+							oBtmAs[6].style.display = "inline";
+							oBtmAs[6].href = pnp[0].href;
+						}
+					}
+				}, 5000);
+				if (getPageSize() == "min") {
+					doc.querySelector(".btmNav-right a:nth-child(1)").style.display = "inline";
+				}
+			} else {
+				oBtmAs[0].href = prof["links"];
+				oBtmAs[1].href = prof["github"];
+				oBtmAs[1].target = "_blank";
+				oBtmAs[2].href = prof["mail"];
+				oBtmAs[2].target = "_blank";
+			}
+		}
+
+		function setCatalog() {
+			var titles = doc.querySelectorAll("#cnblogs_post_body h2,#cnblogs_post_body h3,#cnblogs_post_body h4"),
+				catalog = doc.querySelector("#catalog-ul");
+			var html = "",
+				titleHeights = [];
+			[].forEach.call(titles, function(item, i) {
+				titleHeights.push(getElementHeight(item) - 150);
+				if (item.tagName == "H2") {
+					html += "<li class='catalog-li-h2'><a onclick='initAction.scrollTitle(" + i + ")' >" + item.innerText +
+						"</a></li>"
+				} else if (item.tagName == "H3") {
+					html += "<li class='catalog-li-h3'><a onclick='initAction.scrollTitle(" + i + ")'>" + item.innerText +
+						"</a></li>"
+				} else {
+					html += "<li class='catalog-li-h4'><a onclick='initAction.scrollTitle(" + i + ")'>" + item.innerText +
+						"</a></li>"
+				}
+			});
+			catalog.innerHTML = html;
+			window.titleHeights = titleHeights;
+		}
+
+		function setScroll(size, location) {
+			var before = 0;
+			var oTopNav = doc.querySelector(".topNav"),
+				oBtmNav = doc.querySelector(".btmNav"),
+				sideBar = doc.querySelector("#sideBar");
+
+			window.addEventListener("scroll", function() {
+				var now = doc.documentElement.scrollTop || document.body.scrollTop;
+				if (now > before) {
+					if (now > 70) {
+						if (!oTopNav.className.match(/\btopNav-hide\b/)) {
+							oTopNav.className += " topNav-hide";
+							oBtmNav.className += " btmNav-hide";
+						}
+					}
+				} else {
+					if (oTopNav.className.match(/\btopNav-hide\b/)) {
+						oTopNav.className = "topNav";
+						oBtmNav.className = "btmNav";
+					}
+				}
+				before = now;
+			});
+			if (size == "max") {
+				window.addEventListener("scroll", function() {
+					var now = doc.documentElement.scrollTop || document.body.scrollTop;
+					// sideBar
+					if (sideBar.className == "sideBar-show") {
+						sideBar.className = "";
+					}
+					before = now;
+				});
+				if (location == "blogDetail") {
+					window.addEventListener("scroll", function() {
+						var catalog = doc.querySelector("#catalog-box"),
+							oLis = doc.querySelectorAll("#catalog-ul li"),
+							comment = doc.querySelector("#blog-comments-placeholder"),
+							comHeight = initSource.getElementHeight(comment) - 100,
+							now = doc.documentElement.scrollTop || document.body.scrollTop,
+							len = titleHeights.length;
+						// menu show or hide
+						if (now >= titleHeights[0] && now < comHeight) {
+							catalog.style.display = "block";
+						} else {
+							catalog.style.display = "none";
+						}
+						// menu follow
+						for (var i = 0; i < len - 1; i++) {
+							if (now >= titleHeights[i] && now < titleHeights[i + 1]) {
+								if (!oLis[i].className.match(/\bcatalog-li-current\b/)) {
+									oLis[i].className += " catalog-li-current";
+								}
+							} else {
+								oLis[i].className = oLis[i].className.replace(/\bcatalog-li-current\b/g, '').trim();
+							}
+						}
+						if (len > 0) {
+							if (now >= titleHeights[len - 1]) {
+								if (!oLis[len - 1].className.match(/\bcatalog-li-current\b/)) {
+									oLis[len - 1].className += " catalog-li-current";
+								}
+							} else {
+								oLis[len - 1].className = oLis[len - 1].className.replace(/\bcatalog-li-current\b/g, '').trim();
+							}
+						}
+						before = now;
+					});
+				}
+			} else if (location == "blogDetail") {
+				window.addEventListener("scroll", function() {
+					var oLis = doc.querySelectorAll("#catalog-ul li"),
+						now = doc.documentElement.scrollTop || document.body.scrollTop,
+						len = titleHeights.length;
+					// menu follow
+					for (var i = 0; i < len - 1; i++) {
+						if (now >= titleHeights[i] && now < titleHeights[i + 1]) {
+							if (!oLis[i].className.match(/\bcatalog-li-current\b/)) {
+								oLis[i].className += " catalog-li-current";
+							}
+						} else {
+							oLis[i].className = oLis[i].className.replace(/\bcatalog-li-current\b/g, '').trim();
+						}
+					}
+					if (len > 0) {
+						if (now >= titleHeights[len - 1]) {
+							if (!oLis[len - 1].className.match(/\bcatalog-li-current\b/)) {
+								oLis[len - 1].className += " catalog-li-current";
+							}
+						} else {
+							oLis[len - 1].className = oLis[len - 1].className.replace(/\bcatalog-li-current\b/g, '').trim();
+						}
+					}
+					before = now;
+				});
+			}
+		}
+
+		function setFooter() {
+			var oFooter = doc.querySelector("#footer"),
+				hFooter = oFooter.innerHTML,
+				themeHref = "https://github.com/pgjett/zzzh-cnblogs-theme",
+				themeBy = "https://pgjett.cnblogs.com/";
+			var themeInfo = "| Theme <a href='" + themeHref + "' target='_blank'>shmily</a> by <a href='" + themeBy +
+				"' target='_blank'>pgjett</a>";
+			oFooter.innerHTML = hFooter.replace("<br>", themeInfo + "<br/>");
+		}
+
+		function setBackgroundLoad(arr, nth) {
+			var now = document.documentElement.scrollTop || document.body.scrollTop,
+				seeHeight = doc.documentElement.clientHeight;
+			for (var i = nth; i < arr.length; i++) {
+				if (getElementHeight(arr[i]) < seeHeight + now) {
+					arr[i].style.backgroundImage = arr[i].getAttribute("data-src");
+					nth = i + 1;
+				}
+			}
+			return nth;
+		}
+
+		function setCopyButton() {
+			var textarea = doc.createElement("textarea");
+			textarea.id = "copyArea";
+			doc.querySelector("html").appendChild(textarea);
+			[].forEach.call(doc.querySelectorAll("pre code"), function(item) {
+				var a = doc.createElement("a");
+				a.className = "copyBtn shmilyFont shmily-copy";
+				item.appendChild(a);
+				a.onclick = function() {
+					textarea.innerHTML = this.parentElement.innerHTML.replace(/<\/?.+?\/?>/g, '');
+					textarea.select();
+					if (doc.execCommand("copy")) {
+						initAction.alertMsg("复制成功！", "success");
+					}
+				};
+			});
+		}
+
+		function setImgZoom() {
+			var oImgs = doc.querySelectorAll("#cnblogs_post_body img"),
+				zoomBox = doc.querySelector("#zoom-box"),
+				zoomImg = doc.querySelector("#zoom-item");
+			[].forEach.call(oImgs, function(item) {
+				item.onclick = function() {
+					var winHW = {
+						"h": window.innerHeight * 0.8,
+						"w": window.innerWidth * 0.8
+					};
+					zoomImg.src = this.src;
+					if (this.height > winHW.h) {
+						this.width = winHW.h / this.height * this.width;
+						this.height = winHW.h;
+					}
+					if (this.width > winHW.w) {
+						this.height = winHW.w / this.width * this.height;
+						this.width = winHW.w;
+					}
+					zoomImg.height = this.height;
+					zoomImg.width = this.width;
+					zoomImg.style.top = (winHW.h / 0.8 - zoomImg.height) / 2 + "px";
+					zoomBox.style.display = "block";
+				};
+			});
+			zoomBox.onclick = function() {
+				zoomBox.style.display = "none";
+			};
+		}
+
+		function setCommentArea() {
+			setTimer(function() {
+				return doc.querySelector(".feedbackCon");
+			}, function() {
+				var srcSpans = doc.querySelectorAll(".feedbackCon > span:last-child");
+				[].forEach.call(doc.querySelectorAll(".feedbackListSubtitle"), function(item, i) {
+					var avatar = doc.createElement("img");
+					avatar.src = srcSpans[i].innerText;
+					item.insertBefore(avatar, item.firstElementChild);
+				});
+				[].forEach.call(doc.querySelectorAll(".comment_actions a"), function(item) {
+					if (item.innerText.trim() == "删除") {
+						item.outerHTML = item.outerHTML.replace(/return DelComment(\(.+?\))/g, function(match, key) {
+							return "initAction.nativeDelete" + key;
+						});
+					}
+				});
+			}, 5000);
+			if (isLogined) {
+				var submitBtn = doc.querySelector("#btn_comment_submit"),
+					cancelBan = doc.querySelector("#span_comment_canceledit a");
+				submitBtn.value = "提交";
+				cancelBan.innerText = "取消";
+				submitBtn.addEventListener("click", function() {
+					var tip = doc.querySelector("#tip_comment").innerText;
+					if (tip.length > 0) {
+						initAction.alertMsg(tip, "prompt");
+						setTimer(function() {
+							return doc.querySelector("#tip_comment").innerText != tip;
+						}, function() {
+							initAction.alertMsg(doc.querySelector("#tip_comment").innerText, "prompt");
+						}, 3000);
+					}
+				});
+			}
+			doc.querySelectorAll("#comment_nav a")[2].href = "javascript:initAction.scrollTop();";
+		}
+
+		function setTimer(re, fn, wait, back) {
+			if (re()) {
+				fn();
+			} else {
+				var interval = setInterval(function() {
+					if (re()) {
+						fn();
+						clearInterval(interval);
+						interval = null;
+					}
+				}, 100);
+				setTimeout(function() {
+					if (interval) {
+						clearInterval(interval);
+						interval = null;
+						back && back();
+					}
+				}, wait || 3000);
+			}
+		}
+		return {
+			getPageLocation: getPageLocation,
+			getPageSize: getPageSize,
+			getPageHeight: getPageHeight,
+			getElementHeight: getElementHeight,
+			getIeFlag: getIeFlag,
+			setIcon: setIcon,
+			setNavHref: setNavHref,
+			setCatalog: setCatalog,
+			setScroll: setScroll,
+			setFooter: setFooter,
+			setBackgroundLoad: setBackgroundLoad,
+			setCopyButton: setCopyButton,
+			setImgZoom: setImgZoom,
+			setCommentArea: setCommentArea,
+			setTimer: setTimer
+		}
+	})(document);
+
+	var initAction = (function(doc) {
+
+		function scrollTop() {
+			initSource.getIeFlag() ? window.scrollTo(0, 0) : window.scrollTo({
+				top: 0,
+				behavior: "smooth"
+			});
+		}
+
+		function scrollBottom() {
+			initSource.getIeFlag() ? window.scrollTo(0, initSource.getPageHeight()) : window.scrollTo({
+				top: initSource.getPageHeight(),
+				behavior: "smooth"
+			});
+		}
+
+		function scrollTitle(i) {
+			initSource.getIeFlag() ? window.scrollTo(0, titleHeights[i]) : window.scrollTo({
+				top: titleHeights[i],
+				behavior: "smooth"
+			});
+
+		}
+
+		function switchTopNav() {
+			var topNavMenu = doc.querySelector(".topNav-right"),
+				btn = doc.querySelector(".topNav-switch i");
+			if (topNavMenu.className.match(/\btopNav-right-show\b/)) {
+				topNavMenu.className = topNavMenu.className.replace(/\btopNav-right-show\b/, "").trim();
+				btn.className = btn.className.replace(/\bshmily-arrow-up\b/, "shmily-arrow-down");
+			} else {
+				topNavMenu.className += " topNav-right-show";
+				btn.className = btn.className.replace(/\bshmily-arrow-down\b/, "shmily-arrow-up");
+			}
+		}
+
+		function switchBtmNav() {
+			var btmNavRight = doc.querySelector(".btmNav-right"),
+				btn = doc.querySelector(".btmNav-left a:nth-child(4) i");
+			if (btmNavRight.className.match(/\bbtmNav-right-show\b/)) {
+				btmNavRight.className = btmNavRight.className.replace(/\bbtmNav-right-show\b/, "").trim();
+				btn.className = btn.className.replace(/\bshmily-arrow-down\b/, "shmily-arrow-up");
+			} else {
+				btmNavRight.className += " btmNav-right-show";
+				btn.className = btn.className.replace(/\bshmily-arrow-up\b/, "shmily-arrow-down");
+			}
+		}
+
+		function switchSideBar() {
+			var sideBar = doc.querySelector("#sideBar"),
+				btn = doc.querySelector(".btmNav-right a:nth-child(6) i");
+			if (sideBar.className == "sideBar-show") {
+				sideBar.className = "";
+				btn.className = btn.className.replace(/\bshmily-zhankai\b/, "shmily-shouqi");
+			} else {
+				sideBar.className = "sideBar-show";
+				btn.className = btn.className.replace(/\bshmily-shouqi\b/, "shmily-zhankai");
+			}
+		}
+
+		function switchCatalog() {
+			var catalog = doc.querySelector("#catalog-box"),
+				btn = doc.querySelector(".btmNav-right a:nth-child(1) i");
+			if (catalog.className == "catalog-show") {
+				catalog.className = "";
+				btn.className = btn.className.replace(/\bshmily-shouqi\b/, "shmily-zhankai");
+			} else {
+				catalog.className = "catalog-show";
+				btn.className = btn.className.replace(/\bshmily-zhankai\b/, "shmily-shouqi");
+			}
+		}
+
+		function nativeFollow(n) {
+			$.ajax({
+				url: getAjaxBaseUrl() + "Follow/GetFollowStatus.aspx",
+				data: {
+					blogUserGuid: n
+				},
+				cache: !1,
+				dataType: "text",
+				type: "get",
+				success: function(n) {
+					if (n == "") {
+						alertMsg("不能关注自己", "prompt");
+					} else {
+						alertMsg(n, "prompt");
+					}
+				}
+			})
+		}
+
+		function nativeVote(n, t, i) {
+			if (!n) {
+				alertMsg("推荐出错误！postId不正确");
+				return
+			}
+			i || (i = !1);
+			var r = {
+				postId: +n,
+				voteType: t,
+				isAbandoned: i
+			};
+			$.ajax({
+				url: getAjaxBaseUrl() + "vote/blogpost",
+				type: "post",
+				dataType: "json",
+				contentType: "application/json; charset=utf-8",
+				data: JSON.stringify(r),
+				success: function(n) {
+					if (n.isSuccess) {
+						alertMsg(n.message, "success");
+					} else {
+						alertMsg(n.message, "prompt");
+					}
+				},
+				error: function(n) {
+					n.status > 0 && (n.status == 500 ? alertMsg("抱歉！发生了错误！", "prompt") : alertMsg(n.responseText, "prompt"));
+				}
+			})
+		}
+
+		function nativeDelete(n, t, i) {
+			if (!confirm("确认要删除该评论吗?")) {
+				return;
+			}
+			$.ajax({
+				url: getAjaxBaseUrl() + "comment/DeleteComment.aspx",
+				type: "post",
+				data: JSON.stringify({
+					commentId: n,
+					pageIndex: commentManager.getCurrentPage(),
+					parentId: +i
+				}),
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				timeout: 1e4,
+				success: function(n) {
+					if (n) {
+						alertMsg("删除成功！", "success");
+						while (t.className != "feedbackItem") {
+							t = t.parentElement;
+						}
+						t.parentElement.removeChild(t);
+					} else alertMsg("删除失败！", "prompt");
+				},
+				error: function() {
+					alertMsg("删除失败！", "prompt");
+				}
+			});
+		}
+
+		function alertMsg(msg, flag) {
+			var alertBox = doc.querySelector("#alert-box");
+			var alertItem = doc.createElement("div"),
+				alertContent = doc.createElement("div");
+			alertContent.innerHTML = msg;
+			alertItem.className = "alert-item";
+			alertContent.className = "alert-item-content shmilyFont shmily-" + flag;
+			alertItem.appendChild(alertContent);
+			alertBox.appendChild(alertItem);
+			setTimeout(function() {
+				alertItem.className += " alert-item-show";
+			}, 100);
+			setTimeout(function() {
+				alertItem.className = alertItem.className.replace(/\balert-item-show\b/, '').trim();
+			}, 3000);
+			setTimeout(function() {
+				alertItem.parentElement.removeChild(alertItem);
+			}, 3500);
+		}
+
+		return {
+			scrollTop: scrollTop,
+			scrollBottom: scrollBottom,
+			scrollTitle: scrollTitle,
+			switchTopNav: switchTopNav,
+			switchBtmNav: switchBtmNav,
+			switchSideBar: switchSideBar,
+			switchCatalog: switchCatalog,
+			nativeFollow: nativeFollow,
+			nativeVote: nativeVote,
+			nativeDelete: nativeDelete,
+			alertMsg: alertMsg
+		}
+	})(document, initSource);
+</script>
+<!--init-->
+<script type="text/javascript">
+	(function(doc, prof, news, render, source) {
+
+		var location = source.getPageLocation(),
+			size = source.getPageSize();
+
+		var oLoading = doc.querySelector("#loading"),
+			oMain = doc.querySelector("#mainContent");
+
+		function init() {
+			above();
+			ready();
+			load();
+		}
+
+		function above() {
+			NProgress.start();
+			source.setIcon(prof);
+		}
+
+		function ready() {
+			doc.addEventListener("DOMContentLoaded", function() {
+				render[location](news);
+			});
+		}
+
+		function load() {
+			window.addEventListener("load", function() {
+				show();
+				source.setNavHref(prof, location);
+				source.setScroll(size, location);
+				source.setFooter();
+			});
+		}
+
+		function show() {
+			oLoading.style.display = "none";
+			oMain.className = "mainContent-show";
+			NProgress.done();
+		}
+
+		init();
+
+	})(document, profile, news, initRender, initSource, initAction);
+</script>
+<!--***end: javascript***-->
+=======
+<!--***start: page end html***-->
+<div class="btmNav">
+    <div class="btmNav-content">
+        <div class="btmNav-left">
+            <a href="javascript:;">Links</a>
+            <a href="javascript:;">Github</a>
+            <a href="javascript:;">MailTo</a>
+            <a href="javascript:;" onclick="initAction.switchBtmNav()">
+                <i class="shmilyFont shmily-arrow-up"></i>
+            </a>
+        </div>
+        <div class="btmNav-right">
+            <a href="javascript:;" onclick="initAction.switchCatalog()">
+                <i class="shmilyFont shmily-zhankai"></i>
+            </a>
+            <a href="javascript:;">
+                <i class="shmilyFont shmily-leftarrow"></i>
+            </a>
+            <a href="javascript:;">
+                <i class="shmilyFont shmily-Rightarrow"></i>
+            </a>
+            <a href="javascript:;" onclick="initAction.scrollTop()">
+                <i class="shmilyFont shmily-rising"></i>
+            </a>
+            <a href="javascript:;" onclick="initAction.scrollBottom()">
+                <i class="shmilyFont shmily-falling"></i>
+            </a>
+            <a href="javascript:;" onclick="initAction.switchSideBar()">
+                <i class="shmilyFont shmily-shouqi"></i>
+            </a>
+        </div>
+    </div>
+</div>
+<!--***end：page end html***-->
+
+<!--***start: javascript***-->
+<!--plugin-->
+<script src="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+<script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+<!--parameter-->
+<script type="text/javascript">
+    var profile = {
+        "icon": "https://blog-static.cnblogs.com/files/pgjett/favicon.ico",
+        "logo": "https://blog-static.cnblogs.com/files/pgjett/logo.ico",
+        "github": "https://github.com/pgjett",
+        "links": "https://www.cnblogs.com/pgjett/p/12294879.html",
+        "about": "https://www.cnblogs.com/pgjett/p/12294875.html",
+        "mail": "http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=eAgfEh0MDDgJCVYbFxU",
+        "followId": '54ceedb5-de8f-4136-e346-08d7804a3aa0'
+    };
+    var news = [
+        {
+            "title": "我的博客园主题开源地址，戳这里",
+            "url": "https://github.com/pgjett/shmily-cnblogs-theme",
+            "target": "_blank"
+        },
+        {
+            "title": "并发与多线程知识总结",
+            "url": "https://www.cnblogs.com/pgjett/p/12340772.html"
+        },
+        {
+            "title": "武汉加油，中国加油！",
+        },
+        {
+            "title": "努力永远不会太迟。",
+        }
+    ];
+</script>
+<!--template-->
+<script id="postItemTpl" type="text/html">
+    <div class="postItem-box">
+        <div class="postItem-content">
+            <div class="postItem-img" data-src="{{img}}"></div>
+            <a href="{{href}}">
+                <div class="postItem-con">{{con}}</div>
+            </a>
+            <div class="postItem-title">
+                <a href="{{href}}">{{title}}</a>
+            </div>
+            <div class="postItem-desc">
+                <span>
+                    <i class="shmilyFont shmily-calendar"></i>{{time}}
+                </span>
+                <span>
+                    <i class="shmilyFont shmily-browse"></i>{{read}}
+                </span>
+                <span>
+                    <i class="shmilyFont shmily-comments"></i>{{msg}}
+                </span>
+            </div>
+        </div>
+    </div>
+</script>
+<script id="blogInfoTpl" type="text/html">
+    <div class="blogInfo-box">
+        <span>
+            <i class="shmilyFont shmily-calendar"></i>{{time}}
+        </span>
+        <span>
+            <i class="shmilyFont shmily-account"></i>{{author}}
+        </span>
+        <span>
+            <i class="shmilyFont shmily-browse"></i>{{read}}
+        </span>
+        <span>
+            <i class="shmilyFont shmily-comments"></i>{{msg}}
+        </span>
+        <span>
+            <i class="shmilyFont shmily-editor"></i>{{editor}}
+        </span>
+        <div class="blogInfo-category">
+            {{category}}
+        </div>
+    </div>
+</script>
+<script id="archiveItemTpl" type="text/html">
+    <div class="archiveItem-box">
+        <div class="archiveItem-content">
+            <div class="archiveItem-title">
+                <a href="{{href}}">{{title}}</a>
+            </div>
+            <div class="archiveItem-time">
+                {{time}}
+            </div>
+        </div>
+    </div>
+</script>
+<script id="pageInfoTpl" type="text/html">
+    <div class="pageInfo-box">
+        {{info}}
+    </div>
+</script>
+<script id="scrollNewsTpl" type="text/html">
+    <div class="scrollNews-box">
+        <div class="scrollNews-content">
+            <i class="shmilyFont shmily-notice"></i>
+            <ul>
+                {{news}}
+            </ul>
+        </div>
+    </div>
+</script>
+<!--modules-->
+<script type="text/javascript">
+    var initRender = (function (doc) {
+
+        function render(data) {
+            var oMain = doc.querySelector("#mainContent");
+            oMain.innerHTML = data;
+        }
+
+        function tplReplace(hTpl, obj) {
+            return hTpl.replace(/{{(.*?)}}/g, function (match, key) {
+                return obj[key];
+            });
+        }
+
+        function objParse(obj, i) {
+            var oImg = obj["con"].querySelector(".desc_img"),
+                tCon = obj["con"].innerText;
+            obj["img"] = oImg ? "url(" + oImg.getAttribute("data-src") + ")" : "none";
+            obj["href"] = obj["title"].querySelector("a").href;
+            obj["con"] = tCon.replace(/摘要：|阅读全文/g, '');
+            obj["title"] = obj["title"].innerText;
+            obj["time"] = obj["desc"].innerText.match(/\d{4}-\d{2}-\d{2}/)[0];
+            obj["read"] = obj["desc"].innerText.match(/\(.+?\)/)[0].replace(/\(|\)/g, '');
+            obj["msg"] = obj["desc"].innerText.match(/\(.+?\)/g)[1].replace(/\(|\)/g, '');
+            return obj;
+        }
+
+        function pageNavigator() {
+            var next = doc.querySelector("#nav_next_page a"),
+                pager = doc.querySelector(".pager");
+            if (next) {
+                return doc.querySelector("#nav_next_page").outerHTML.replace("下一页", "<i class='shmilyFont shmily-resonserate-fill'></i>");
+            } else if (pager) {
+                return pager.outerHTML.replace("上一页", "<i class='shmilyFont shmily-arrow-lift'></i>").replace("下一页", "<i class='shmilyFont shmily-arrow-right'></i>");
+            }
+            return '';
+        }
+
+        function imgCancel() {
+            [].forEach.call(doc.querySelectorAll(".postCon .desc_img"), function (item) {
+                if (item.src) {
+                    item.setAttribute("data-src", item.src);
+                    item.src = '';
+                }
+            });
+        }
+
+        function imgLoad() {
+            var divArr = doc.querySelectorAll(".postItem-img"),
+                nowDiv = initSource.setBackgroundLoad(divArr, 0);
+            window.addEventListener("scroll", function () {
+                nowDiv = initSource.setBackgroundLoad(divArr, nowDiv);
+            });
+        }
+
+        function newsCarousel(news) {
+            var data = "",
+                newsTpl = doc.querySelector("#scrollNewsTpl").innerHTML,
+                newsItem = "<li><a href='{{url}}'target='{{target}}'>{{title}}</a></li>";
+            news.forEach(function (item) {
+                item["url"] = item["url"] || "javascript:;";
+                item["target"] = item["target"] || "_self";
+                data += newsItem.replace(/{{(.+?)}}/g, function (match, key) {
+                    return item[key];
+                });
+            });
+            data = newsTpl.replace(/{{news}}/, data);
+            setInterval(function () {
+                doc.querySelector(".scrollNews-content ul").firstElementChild.style.marginTop = "-20px";
+                setTimeout(function () {
+                    doc.querySelector(".scrollNews-content ul").appendChild(doc.querySelector(".scrollNews-content ul").firstElementChild);
+                    doc.querySelector(".scrollNews-content ul").lastElementChild.style.marginTop = "0px";
+                }, 500);
+            }, 3000);
+            jinrishici.load(function (result) {
+                var content = result.data.content,
+                    author = result.data.origin.author,
+                    dynasty = result.data.origin.dynasty,
+                    li = doc.createElement("li");
+                li.id = "poem-li";
+                li.innerText = content + " —— " + author + "【" + dynasty + "】";
+                doc.querySelector(".scrollNews-content ul").appendChild(li);
+                setInterval(function () {
+                    jinrishici.load(function (result) {
+                        var content = result.data.content,
+                            author = result.data.origin.author,
+                            dynasty = result.data.origin.dynasty;
+                        doc.querySelector("#poem-li").innerText = content + " —— " + author + "【" + dynasty + "】";
+                    });
+                }, 3000 * doc.querySelectorAll(".scrollNews-content li").length);
+            });
+            return data;
+        }
+
+        function defaultPage(news) {
+            imgCancel();
+            var oTitles = doc.querySelectorAll(".postTitle"),
+                oCons = doc.querySelectorAll(".postCon"),
+                oDescs = doc.querySelectorAll(".postDesc");
+            var itemTpl = doc.querySelector("#postItemTpl").innerHTML,
+                infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
+                data = "";
+            if (oTitles.length == 0) {
+                data += tplReplace(infoTpl, {"info": "Nothing is here"});
+            }
+            [].forEach.call(oTitles, function (item, i) {
+                data += tplReplace(itemTpl, objParse({
+                    "con": oCons[i],
+                    "title": oTitles[i],
+                    "desc": oDescs[i]
+                }));
+            });
+            render(newsCarousel(news) + data + pageNavigator());
+            imgLoad();
+        }
+
+        function categoryPage() {
+            imgCancel();
+            var oTitles = doc.querySelectorAll(".entrylistPosttitle"),
+                oCons = doc.querySelectorAll(".entrylistPostSummary"),
+                oDescs = doc.querySelectorAll(".entrylistItemPostDesc");
+            var itemTpl = doc.querySelector("#postItemTpl").innerHTML,
+                infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
+                data = "";
+            if (oTitles.length == 0) {
+                data += tplReplace(infoTpl, {"info": "Nothing is here"});
+            }
+            [].forEach.call(oTitles, function (item, i) {
+                    data += tplReplace(itemTpl, objParse({
+                        "con": oCons[i],
+                        "title": oTitles[i],
+                        "desc": oDescs[i]
+                    }));
+                }
+            );
+            render(data + pageNavigator());
+            imgLoad();
+        }
+
+        function myBlogPage() {
+            var oTitles = doc.querySelectorAll(".postTitl2"),
+                oDescs = doc.querySelectorAll(".postDesc2");
+            var itemTpl = doc.querySelector("#archiveItemTpl").innerHTML,
+                infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
+                data = "",
+                temp = {};
+            [].forEach.call(oTitles, function (item, i) {
+                    if (!temp[oDescs[i].innerText.match(/\d{4}-\d{2}/)[0]]) {
+                        data += tplReplace(infoTpl, {"info": oDescs[i].innerText.match(/\d{4}-\d{2}/)[0]});
+                        temp[oDescs[i].innerText.match(/\d{4}-\d{2}/)[0]] = 1;
+                    }
+                    data += tplReplace(itemTpl, {
+                        "title": item.innerText,
+                        "href": item.querySelector("a").href,
+                        "time": oDescs[i].innerText.match(/\d{4}-\d{2}-\d{2}/)[0]
+                    });
+                }
+            );
+            render(data + pageNavigator());
+        }
+
+        function blogDetailPage() {
+            window.addEventListener("load", function () {
+                initSource.setTimer(function () {
+                    var read = doc.querySelector(".postDesc").innerText.match(/\(.+?\)/)[0].replace(/\(|\)/g, ''),
+                        msg = doc.querySelector(".postDesc").innerText.match(/\(.+?\)/g)[1].replace(/\(|\)/g, '');
+                    return !isNaN(read + msg);
+                }, function () {
+                    var desc = doc.querySelector(".postDesc"),
+                        category = doc.querySelector("#BlogPostCategory");
+                    var hTpl = doc.querySelector("#blogInfoTpl").innerHTML,
+                        hDesc = desc.innerText;
+                    console.log(desc);
+                    doc.querySelector(".post .postTitle").outerHTML += tplReplace(hTpl, {
+                        "time": hDesc.match(/\d{4}-\d{2}-\d{2}/)[0],
+                        "author": desc.querySelector("a").outerHTML,
+                        "read": hDesc.match(/\(.+?\)/)[0].replace(/\(|\)/g, ''),
+                        "msg": hDesc.match(/\(.+?\)/g)[1].replace(/\(|\)/g, ''),
+                        "editor": desc.querySelector("a:nth-last-of-type(2)").outerHTML,
+                        "category": category ? category.innerHTML : "分类：no support for this browser"
+                    });
+                    initSource.setCatalog();
+                    initSource.setCopyButton();
+                    initSource.setCommentArea();
+                    initSource.setImgZoom();
+                }, 5000);
+            });
+        }
+
+        function monthArchivePage() {
+            var oTitles = doc.querySelectorAll(".entrylistPosttitle"),
+                oDescs = doc.querySelectorAll(".entrylistItemPostDesc");
+            var itemTpl = doc.querySelector("#archiveItemTpl").innerHTML,
+                infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
+                data = "";
+            if (oTitles.length > 0) {
+                data += tplReplace(infoTpl, {"info": oDescs[0].innerText.match(/\d{4}-\d{2}/)[0]});
+            } else {
+                data += tplReplace(infoTpl, {"info": "Nothing is here"});
+            }
+            [].forEach.call(oTitles, function (item, i) {
+                    data += tplReplace(itemTpl, {
+                        "title": item.innerText,
+                        "href": item.querySelector("a").href,
+                        "time": oDescs[i].innerText.match(/\d{4}-\d{2}-\d{2}/)[0]
+                    });
+                }
+            );
+            render(data + pageNavigator());
+        }
+
+        function dayArchivePage() {
+            var oTitles = doc.querySelectorAll(".postTitle"),
+                oDescs = doc.querySelectorAll(".postDesc");
+            var itemTpl = doc.querySelector("#archiveItemTpl").innerHTML,
+                infoTpl = doc.querySelector("#pageInfoTpl").innerHTML,
+                data = "";
+            if (oTitles.length > 0) {
+                data += tplReplace(infoTpl, {"info": oDescs[0].innerText.match(/\d{4}-\d{2}-\d{2}/)[0]});
+            } else {
+                data += tplReplace(infoTpl, {"info": "Nothing is here"});
+            }
+            [].forEach.call(oTitles, function (item, i) {
+                    data += tplReplace(itemTpl, {
+                        "title": item.innerText,
+                        "href": item.querySelector("a").href,
+                        "time": oDescs[i].innerText.match(/\d{4}-\d{2}-\d{2}/)[0]
+                    });
+                }
+            );
+            render(data + pageNavigator());
+        }
+
+        function tagPage() {
+
+        }
+
+        function totalGalleryPage() {
+
+        }
+
+        function imgGalleryPage() {
+
+        }
+
+        function otherPostsPage() {
+
+        }
+
+        function undefinedPage() {
+            var tpl = doc.querySelector("#pageInfoTpl").innerHTML;
+            render(tplReplace(tpl, {"info": "Sorry, a bug has occurred, check you url please"}));
+        }
+
+        return {
+            default: defaultPage,
+            blogDetail: blogDetailPage,
+            myBlog: myBlogPage,
+            category: categoryPage,
+            monthArchive: monthArchivePage,
+            dayArchive: dayArchivePage,
+            tag: tagPage,
+            totalGallery: totalGalleryPage,
+            imgGallery: imgGalleryPage,
+            otherPosts: otherPostsPage,
+            undefined: undefinedPage
+        }
+    })(document);
+
+    var initSource = (function (doc) {
+
+        function getPageLocation() {
+            var url = window.location.href.substr(24 + currentBlogApp.length),
+                urlReg = {
+                    "default": /^\/?(default\.html(\?page=\d+)?)?$/,
+                    "blogDetail": /^\/(protected\/)?(p|article)\/\d+\.html?(#.*)?$/,
+                    "myBlog": /^\/p\/?(\?page=\d+)?$/,
+                    "category": /^\/category\//,
+                    "monthArchive": /^\/archive\/\d{4}\/\d{2}\.html/,
+                    "dayArchive": /^\/archive\/\d{4}\/\d{2}\/\d{2}\.html/,
+                    "tag": /^\/tag/,
+                    "totalGallery": /^\/gallery\/\d+\.html/,
+                    "imgGallery": /^\/gallery\/image/,
+                    "otherPosts": /^\/OtherPosts\.html/
+                };
+            for (var key in urlReg) {
+                if (urlReg[key].test(url)) {
+                    return key;
+                }
+            }
+            return "undefined";
+        }
+
+        function getPageSize() {
+            if (window.innerWidth || document.documentElement.clientWidth > 767) {
+                return "max";
+            } else return "min";
+        }
+
+        function getPageHeight() {
+            return doc.documentElement.scrollHeight || doc.body.scrollHeight;
+        }
+
+        function getElementHeight(element) {
+            if (element.offsetParent.tagName == "BODY") {
+                return element.offsetTop;
+            } else return element.offsetTop + getElementHeight(element.offsetParent);
+        }
+
+        function getIeFlag() {
+            return /\bTrident\b/.test(navigator.userAgent);
+        }
+
+        function setIcon(prof) {
+            var oIcon = document.createElement("link");
+            oIcon.rel = "shortcut icon";
+            oIcon.href = prof["icon"];
+            doc.querySelector("head").appendChild(oIcon);
+            doc.querySelector(".topNav-logo img").setAttribute("src", prof["logo"]);
+        }
+
+        function setNavHref(prof, location) {
+            var oTopAs = doc.querySelectorAll(".topNav a"),
+                oBtmAs = doc.querySelectorAll(".btmNav a");
+            oTopAs[0].href = "https://www.cnblogs.com/" + currentBlogApp;
+            oTopAs[2].href = "https://www.cnblogs.com/" + currentBlogApp;
+            oTopAs[3].href = "https://www.cnblogs.com/" + currentBlogApp + "/p";
+            oTopAs[4].href = "https://msg.cnblogs.com/send/" + currentBlogApp;
+            oTopAs[6].href = prof["about"];
+            if (location == "blogDetail") {
+                oBtmAs[0].innerHTML = "点赞";
+                oBtmAs[1].innerHTML = "收藏";
+                oBtmAs[2].innerHTML = "关注";
+                oBtmAs[0].onclick = function () {
+                    initAction.nativeVote(cb_entryId, "Digg")
+                };
+                oBtmAs[1].onclick = function () {
+                    AddToWz(cb_entryId);
+                };
+                oBtmAs[2].onclick = function () {
+                    initAction.nativeFollow(prof["followId"]);
+                };
+                setTimer(function () {
+                    return doc.querySelectorAll("#post_next_prev .p_n_p_prefix").length > 0;
+                }, function () {
+                    var pnp = doc.querySelectorAll("#post_next_prev .p_n_p_prefix");
+                    if (pnp.length > 1) {
+                        oBtmAs[5].style.display = "inline";
+                        oBtmAs[6].style.display = "inline";
+                        oBtmAs[5].href = pnp[0].href;
+                        oBtmAs[6].href = pnp[1].href;
+                    } else if (pnp.length == 1) {
+                        if (pnp[0].innerHTML == "« ") {
+                            oBtmAs[5].style.display = "inline";
+                            oBtmAs[5].href = pnp[0].href;
+                        } else {
+                            oBtmAs[6].style.display = "inline";
+                            oBtmAs[6].href = pnp[0].href;
+                        }
+                    }
+                }, 5000);
+                if (getPageSize() == "min") {
+                    doc.querySelector(".btmNav-right a:nth-child(1)").style.display = "inline";
+                }
+            } else {
+                oBtmAs[0].href = prof["links"];
+                oBtmAs[1].href = prof["github"];
+                oBtmAs[1].target = "_blank";
+                oBtmAs[2].href = prof["mail"];
+                oBtmAs[2].target = "_blank";
+            }
+        }
+
+        function setCatalog() {
+            var titles = doc.querySelectorAll("#cnblogs_post_body h2,#cnblogs_post_body h3,#cnblogs_post_body h4"),
+                catalog = doc.querySelector("#catalog-ul");
+            var html = "",
+                titleHeights = [];
+            [].forEach.call(titles, function (item, i) {
+                titleHeights.push(getElementHeight(item) - 150);
+                if (item.tagName == "H2") {
+                    html += "<li class='catalog-li-h2'><a onclick='initAction.scrollTitle(" + i + ")' >" + item.innerText + "</a></li>"
+                } else if (item.tagName == "H3") {
+                    html += "<li class='catalog-li-h3'><a onclick='initAction.scrollTitle(" + i + ")'>" + item.innerText + "</a></li>"
+                } else {
+                    html += "<li class='catalog-li-h4'><a onclick='initAction.scrollTitle(" + i + ")'>" + item.innerText + "</a></li>"
+                }
+            });
+            catalog.innerHTML = html;
+            window.titleHeights = titleHeights;
+        }
+
+        function setScroll(size, location) {
+            var before = 0;
+            var oTopNav = doc.querySelector(".topNav"),
+                oBtmNav = doc.querySelector(".btmNav"),
+                sideBar = doc.querySelector("#sideBar");
+
+            window.addEventListener("scroll", function () {
+                var now = doc.documentElement.scrollTop || document.body.scrollTop;
+                if (now > before) {
+                    if (now > 70) {
+                        if (!oTopNav.className.match(/\btopNav-hide\b/)) {
+                            oTopNav.className += " topNav-hide";
+                            oBtmNav.className += " btmNav-hide";
+                        }
+                    }
+                } else {
+                    if (oTopNav.className.match(/\btopNav-hide\b/)) {
+                        oTopNav.className = "topNav";
+                        oBtmNav.className = "btmNav";
+                    }
+                }
+                before = now;
+            });
+            if (size == "max") {
+                window.addEventListener("scroll", function () {
+                    var now = doc.documentElement.scrollTop || document.body.scrollTop;
+                    // sideBar
+                    if (sideBar.className == "sideBar-show") {
+                        sideBar.className = "";
+                    }
+                    before = now;
+                });
+                if (location == "blogDetail") {
+                    window.addEventListener("scroll", function () {
+                        var catalog = doc.querySelector("#catalog-box"),
+                            oLis = doc.querySelectorAll("#catalog-ul li"),
+                            comment = doc.querySelector("#blog-comments-placeholder"),
+                            comHeight = initSource.getElementHeight(comment) - 100,
+                            now = doc.documentElement.scrollTop || document.body.scrollTop,
+                            len = titleHeights.length;
+                        // menu show or hide
+                        if (now >= titleHeights[0] && now < comHeight) {
+                            catalog.style.display = "block";
+                        } else {
+                            catalog.style.display = "none";
+                        }
+                        // menu follow
+                        for (var i = 0; i < len - 1; i++) {
+                            if (now >= titleHeights[i] && now < titleHeights[i + 1]) {
+                                if (!oLis[i].className.match(/\bcatalog-li-current\b/)) {
+                                    oLis[i].className += " catalog-li-current";
+                                }
+                            } else {
+                                oLis[i].className = oLis[i].className.replace(/\bcatalog-li-current\b/g, '').trim();
+                            }
+                        }
+                        if (len > 0) {
+                            if (now >= titleHeights[len - 1]) {
+                                if (!oLis[len - 1].className.match(/\bcatalog-li-current\b/)) {
+                                    oLis[len - 1].className += " catalog-li-current";
+                                }
+                            } else {
+                                oLis[len - 1].className = oLis[len - 1].className.replace(/\bcatalog-li-current\b/g, '').trim();
+                            }
+                        }
+                        before = now;
+                    });
+                }
+            } else if (location == "blogDetail") {
+                window.addEventListener("scroll", function () {
+                    var oLis = doc.querySelectorAll("#catalog-ul li"),
+                        now = doc.documentElement.scrollTop || document.body.scrollTop,
+                        len = titleHeights.length;
+                    // menu follow
+                    for (var i = 0; i < len - 1; i++) {
+                        if (now >= titleHeights[i] && now < titleHeights[i + 1]) {
+                            if (!oLis[i].className.match(/\bcatalog-li-current\b/)) {
+                                oLis[i].className += " catalog-li-current";
+                            }
+                        } else {
+                            oLis[i].className = oLis[i].className.replace(/\bcatalog-li-current\b/g, '').trim();
+                        }
+                    }
+                    if (len > 0) {
+                        if (now >= titleHeights[len - 1]) {
+                            if (!oLis[len - 1].className.match(/\bcatalog-li-current\b/)) {
+                                oLis[len - 1].className += " catalog-li-current";
+                            }
+                        } else {
+                            oLis[len - 1].className = oLis[len - 1].className.replace(/\bcatalog-li-current\b/g, '').trim();
+                        }
+                    }
+                    before = now;
+                });
+            }
+        }
+
+        function setFooter() {
+            var oFooter = doc.querySelector("#footer"),
+                hFooter = oFooter.innerHTML,
+                themeHref = "https://github.com/pgjett/zzzh-cnblogs-theme",
+                themeBy = "https://pgjett.cnblogs.com/";
+            var themeInfo = "| Theme <a href='" + themeHref + "' target='_blank'>shmily</a> by <a href='" + themeBy + "' target='_blank'>pgjett</a>";
+            oFooter.innerHTML = hFooter.replace("<br>", themeInfo + "<br/>");
+        }
+
+        function setBackgroundLoad(arr, nth) {
+            var now = document.documentElement.scrollTop || document.body.scrollTop,
+                seeHeight = doc.documentElement.clientHeight;
+            for (var i = nth; i < arr.length; i++) {
+                if (getElementHeight(arr[i]) < seeHeight + now) {
+                    arr[i].style.backgroundImage = arr[i].getAttribute("data-src");
+                    nth = i + 1;
+                }
+            }
+            return nth;
+        }
+
+        function setCopyButton() {
+            var textarea = doc.createElement("textarea");
+            textarea.id = "copyArea";
+            doc.querySelector("html").appendChild(textarea);
+            [].forEach.call(doc.querySelectorAll("pre code"), function (item) {
+                var a = doc.createElement("a");
+                a.className = "copyBtn shmilyFont shmily-copy";
+                item.appendChild(a);
+                a.onclick = function () {
+                    textarea.innerHTML = this.parentElement.innerHTML.replace(/<\/?.+?\/?>/g, '');
+                    textarea.select();
+                    if (doc.execCommand("copy")) {
+                        initAction.alertMsg("复制成功！", "success");
+                    }
+                };
+            });
+        }
+
+        function setImgZoom() {
+            var oImgs = doc.querySelectorAll("#cnblogs_post_body img"),
+                zoomBox = doc.querySelector("#zoom-box"),
+                zoomImg = doc.querySelector("#zoom-item");
+            [].forEach.call(oImgs, function (item) {
+                item.onclick = function () {
+                    var winHW = {"h": window.innerHeight * 0.8, "w": window.innerWidth * 0.8};
+                    zoomImg.src = this.src;
+                    if (this.height > winHW.h) {
+                        this.width = winHW.h / this.height * this.width;
+                        this.height = winHW.h;
+                    }
+                    if (this.width > winHW.w) {
+                        this.height = winHW.w / this.width * this.height;
+                        this.width = winHW.w;
+                    }
+                    zoomImg.height = this.height;
+                    zoomImg.width = this.width;
+                    zoomImg.style.top = (winHW.h / 0.8 - zoomImg.height) / 2 + "px";
+                    zoomBox.style.display = "block";
+                };
+            });
+            zoomBox.onclick = function () {
+                zoomBox.style.display = "none";
+            };
+        }
+
+        function setCommentArea() {
+            setTimer(function () {
+                return doc.querySelector(".feedbackCon");
+            }, function () {
+                var srcSpans = doc.querySelectorAll(".feedbackCon > span:last-child");
+                [].forEach.call(doc.querySelectorAll(".feedbackListSubtitle"), function (item, i) {
+                    var avatar = doc.createElement("img");
+                    avatar.src = srcSpans[i].innerText;
+                    item.insertBefore(avatar, item.firstElementChild);
+                });
+                [].forEach.call(doc.querySelectorAll(".comment_actions a"), function (item) {
+                    if (item.innerText.trim() == "删除") {
+                        item.outerHTML = item.outerHTML.replace(/return DelComment(\(.+?\))/g, function (match, key) {
+                            return "initAction.nativeDelete" + key;
+                        });
+                    }
+                });
+            }, 5000);
+            if (isLogined) {
+                var submitBtn = doc.querySelector("#btn_comment_submit"),
+                    cancelBan = doc.querySelector("#span_comment_canceledit a");
+                submitBtn.value = "提交";
+                cancelBan.innerText = "取消";
+                submitBtn.addEventListener("click", function () {
+                    var tip = doc.querySelector("#tip_comment").innerText;
+                    if (tip.length > 0) {
+                        initAction.alertMsg(tip, "prompt");
+                        setTimer(function () {
+                            return doc.querySelector("#tip_comment").innerText != tip;
+                        }, function () {
+                            initAction.alertMsg(doc.querySelector("#tip_comment").innerText, "prompt");
+                        }, 3000);
+                    }
+                });
+            }
+            doc.querySelectorAll("#comment_nav a")[2].href = "javascript:initAction.scrollTop();";
+        }
+
+        function setTimer(ret, fn, wait, callback) {
+            if (ret()) {
+                fn();
+            } else {
+                var interVal = setInterval(function () {
+                    if (ret()) {
+                        clearInterval(interVal);
+                        fn();
+                    }
+                }, 100);
+                setTimeout(function () {
+                    clearInterval(interVal);
+                    callback();
+                }, wait);
+            }
+        }
+
+        return {
+            getPageLocation: getPageLocation,
+            getPageSize: getPageSize,
+            getPageHeight: getPageHeight,
+            getElementHeight: getElementHeight,
+            getIeFlag: getIeFlag,
+            setIcon: setIcon,
+            setNavHref: setNavHref,
+            setCatalog: setCatalog,
+            setScroll: setScroll,
+            setFooter: setFooter,
+            setBackgroundLoad: setBackgroundLoad,
+            setCopyButton: setCopyButton,
+            setImgZoom: setImgZoom,
+            setCommentArea: setCommentArea,
+            setTimer: setTimer
+        }
+    })(document);
+
+    var initAction = (function (doc) {
+
+        function scrollTop() {
+            initSource.getIeFlag() ? window.scrollTo(0, 0) : window.scrollTo({top: 0, behavior: "smooth"});
+        }
+
+        function scrollBottom() {
+            initSource.getIeFlag() ? window.scrollTo(0, initSource.getPageHeight()) : window.scrollTo({
+                top: initSource.getPageHeight(),
+                behavior: "smooth"
+            });
+        }
+
+        function scrollTitle(i) {
+            initSource.getIeFlag() ? window.scrollTo(0, titleHeights[i]) : window.scrollTo({
+                top: titleHeights[i],
+                behavior: "smooth"
+            });
+
+        }
+
+        function switchTopNav() {
+            var topNavMenu = doc.querySelector(".topNav-right"),
+                btn = doc.querySelector(".topNav-switch i");
+            if (topNavMenu.className.match(/\btopNav-right-show\b/)) {
+                topNavMenu.className = topNavMenu.className.replace(/\btopNav-right-show\b/, "").trim();
+                btn.className = btn.className.replace(/\bshmily-arrow-up\b/, "shmily-arrow-down");
+            } else {
+                topNavMenu.className += " topNav-right-show";
+                btn.className = btn.className.replace(/\bshmily-arrow-down\b/, "shmily-arrow-up");
+            }
+        }
+
+        function switchBtmNav() {
+            var btmNavRight = doc.querySelector(".btmNav-right"),
+                btn = doc.querySelector(".btmNav-left a:nth-child(4) i");
+            if (btmNavRight.className.match(/\bbtmNav-right-show\b/)) {
+                btmNavRight.className = btmNavRight.className.replace(/\bbtmNav-right-show\b/, "").trim();
+                btn.className = btn.className.replace(/\bshmily-arrow-down\b/, "shmily-arrow-up");
+            } else {
+                btmNavRight.className += " btmNav-right-show";
+                btn.className = btn.className.replace(/\bshmily-arrow-up\b/, "shmily-arrow-down");
+            }
+        }
+
+        function switchSideBar() {
+            var sideBar = doc.querySelector("#sideBar"),
+                btn = doc.querySelector(".btmNav-right a:nth-child(6) i");
+            if (sideBar.className == "sideBar-show") {
+                sideBar.className = "";
+                btn.className = btn.className.replace(/\bshmily-zhankai\b/, "shmily-shouqi");
+            } else {
+                sideBar.className = "sideBar-show";
+                btn.className = btn.className.replace(/\bshmily-shouqi\b/, "shmily-zhankai");
+            }
+        }
+
+        function switchCatalog() {
+            var catalog = doc.querySelector("#catalog-box"),
+                btn = doc.querySelector(".btmNav-right a:nth-child(1) i");
+            if (catalog.className == "catalog-show") {
+                catalog.className = "";
+                btn.className = btn.className.replace(/\bshmily-shouqi\b/, "shmily-zhankai");
+            } else {
+                catalog.className = "catalog-show";
+                btn.className = btn.className.replace(/\bshmily-zhankai\b/, "shmily-shouqi");
+            }
+        }
+
+        function nativeFollow(n) {
+            $.ajax({
+                url: getAjaxBaseUrl() + "Follow/GetFollowStatus.aspx",
+                data: {blogUserGuid: n},
+                cache: !1,
+                dataType: "text",
+                type: "get",
+                success: function (n) {
+                    if (n == "") {
+                        alertMsg("不能关注自己", "prompt");
+                    } else {
+                        alertMsg(n, "prompt");
+                    }
+                }
+            })
+        }
+
+        function nativeVote(n, t, i) {
+            if (!n) {
+                alertMsg("推荐出错误！postId不正确");
+                return
+            }
+            i || (i = !1);
+            var r = {postId: +n, voteType: t, isAbandoned: i};
+            $.ajax({
+                url: getAjaxBaseUrl() + "vote/blogpost",
+                type: "post",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(r),
+                success: function (n) {
+                    if (n.isSuccess) {
+                        alertMsg(n.message, "success");
+                    } else {
+                        alertMsg(n.message, "prompt");
+                    }
+                },
+                error: function (n) {
+                    n.status > 0 && (n.status == 500 ? alertMsg("抱歉！发生了错误！", "prompt") : alertMsg(n.responseText, "prompt"));
+                }
+            })
+        }
+
+        function nativeDelete(n, t, i) {
+            if (!confirm("确认要删除该评论吗?")) {
+                return;
+            }
+            $.ajax({
+                url: getAjaxBaseUrl() + "comment/DeleteComment.aspx",
+                type: "post",
+                data: JSON.stringify({
+                    commentId: n,
+                    pageIndex: commentManager.getCurrentPage(),
+                    parentId: +i
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                timeout: 1e4,
+                success: function (n) {
+                    if (n) {
+                        alertMsg("删除成功！", "success");
+                        while (t.className != "feedbackItem") {
+                            t = t.parentElement;
+                        }
+                        t.parentElement.removeChild(t);
+                    } else alertMsg("删除失败！", "prompt");
+                },
+                error: function () {
+                    alertMsg("删除失败！", "prompt");
+                }
+            });
+        }
+
+        function alertMsg(msg, flag) {
+            var alertBox = doc.querySelector("#alert-box");
+            var alertItem = doc.createElement("div"),
+                alertContent = doc.createElement("div");
+            alertContent.innerHTML = msg;
+            alertItem.className = "alert-item";
+            alertContent.className = "alert-item-content shmilyFont shmily-" + flag;
+            alertItem.appendChild(alertContent);
+            alertBox.appendChild(alertItem);
+            setTimeout(function () {
+                alertItem.className += " alert-item-show";
+            }, 100);
+            setTimeout(function () {
+                alertItem.className = alertItem.className.replace(/\balert-item-show\b/, '').trim();
+            }, 3000);
+            setTimeout(function () {
+                alertItem.parentElement.removeChild(alertItem);
+            }, 3500);
+        }
+
+        return {
+            scrollTop: scrollTop,
+            scrollBottom: scrollBottom,
+            scrollTitle: scrollTitle,
+            switchTopNav: switchTopNav,
+            switchBtmNav: switchBtmNav,
+            switchSideBar: switchSideBar,
+            switchCatalog: switchCatalog,
+            nativeFollow: nativeFollow,
+            nativeVote: nativeVote,
+            nativeDelete: nativeDelete,
+            alertMsg: alertMsg
+        }
+    })(document, initSource);
+</script>
+<!--init-->
+<script type="text/javascript">
+    (function (doc, prof, news, render, source) {
+
+        var location = source.getPageLocation(),
+            size = source.getPageSize();
+
+        var oLoading = doc.querySelector("#loading"),
+            oMain = doc.querySelector("#mainContent");
+
+        function init() {
+            above();
+            ready();
+            load();
+        }
+
+        function above() {
+            NProgress.start();
+            source.setIcon(prof);
+        }
+
+        function ready() {
+            doc.addEventListener("DOMContentLoaded", function () {
+                render[location](news);
+            });
+        }
+
+        function load() {
+            window.addEventListener("load", function () {
+                show();
+                source.setNavHref(prof, location);
+                source.setScroll(size, location);
+                source.setFooter();
+            });
+        }
+
+        function show() {
+            oLoading.style.display = "none";
+            oMain.className = "mainContent-show";
+            NProgress.done();
+        }
+
+        init();
+
+    })(document, profile, news, initRender, initSource, initAction);
+</script>
+<!--***end: javascript***-->
+>>>>>>> 7c093bf8ef9266e112983ba437093a40ad9acc28
