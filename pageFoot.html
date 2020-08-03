@@ -447,7 +447,8 @@
 		}
 
 		function getPageSize() {
-			if (window.innerWidth || document.documentElement.clientWidth > 767) {
+			var pageWidth = window.innerWidth || document.documentElement.clientWidth;
+			if (pageWidth > 767) {
 				return "max";
 			} else return "min";
 		}
